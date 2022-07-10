@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Devices>
+  <Device>
+    <Hostname>firewall.domain.com</Hostname>
+    <PHash>ExampleHash</PHash>
+    <BackupConfig>true</BackupConfig>
+    <BackupState>true</BackupState>
+    <BackupVersion>true</BackupVersion>
+    <TLS>1.2</TLS>
+    <BackupPath>C:\Palo Backup Agent\Backups</BackupPath>
+    <LogFile>C:\Palo Backup Agent\log.txt</LogFile>
+  </Device>
+  <Device>
+    <Hostname>firewall2.domain.com</Hostname>
+    <CredentialManager>PBA-firewall2.domain.com</CredentialManager>
+    ...
+  </Device>
+</Devices>

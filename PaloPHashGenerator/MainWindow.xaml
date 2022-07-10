@@ -1,0 +1,35 @@
+﻿<Window x:Class="PaloPHashGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PaloPHashGenerator"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Palo PHash Generator" Height="370" Width="420" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}">
+
+    <Grid>
+        <StackPanel Margin="0,13,307,0">
+            <materialDesign:PackIcon Kind="WallFire" Height="32" Width="32"/>
+            <materialDesign:PackIcon Kind="Account" Margin="0,14,0,0" Height="32" Width="32"/>
+            <materialDesign:PackIcon Kind="Password" Margin="0,14,0,0" Height="32" Width="32"/>
+            <materialDesign:PackIcon Kind="LockOutline" Margin="0,34,0,0" Height="32" Width="32"/>
+        </StackPanel>
+
+        <StackPanel Margin="37,0,0,0">
+            <TextBox x:Name="AddressTextBox" materialDesign:HintAssist.Hint="FQDN - firewall.local.domain" Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="16"/>
+            <TextBox x:Name="UsernameTextBox" materialDesign:HintAssist.Hint="Username" Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="16" />
+            <PasswordBox x:Name="PasswordTextBox" materialDesign:HintAssist.Hint="Password" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" FontSize="16"/>
+            <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
+                <TextBox x:Name="PHashTextBox" materialDesign:HintAssist.Hint="PHash" Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="16" IsReadOnly="True" Width="300" />
+                <Button Content="{materialDesign:PackIcon Clipboard}" Style="{StaticResource MaterialDesignOutlinedDarkButton}" ToolTip="Copy to Clipboard" Margin="5,10,0,0" Click="ClipboardButtonSet" />
+            </StackPanel>
+        </StackPanel>
+        <Button Style="{StaticResource MaterialDesignOutlinedDarkButton}" Content="Connect and Generate" Margin="48,234,82,65" Click="ConnectButton" />
+        <Button Style="{StaticResource MaterialDesignOutlinedDarkButton}" Content="Save to Windows Credential Manager" Click="SaveCMButton" Margin="48,280,82,19" />
+        <Button Content="{materialDesign:PackIcon Clipboard}" Style="{StaticResource MaterialDesignOutlinedDarkButton}" ToolTip="Copy XML tag for config.xml" Margin="342,280,16,17" Click="ClipboardButtonCM" />
+
+    </Grid>
+</Window>

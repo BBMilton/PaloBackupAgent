@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using U8Xml;
 
 namespace PaloBackupAgent
@@ -15,8 +14,8 @@ namespace PaloBackupAgent
         static void Main(string[] args)
         {
             // Set the default paths to be the current folder the exe is in
-            BackupFolder = Assembly.GetEntryAssembly().CodeBase + @"\Backups";
-            LogFile = Assembly.GetEntryAssembly().CodeBase + @"\log.txt";
+            BackupFolder = Environment.CurrentDirectory + @"\Backups";
+            LogFile = Environment.CurrentDirectory + @"\log.txt";
 
             // Read the config file and backup the required areas
             ParseXML();
@@ -53,7 +52,14 @@ namespace PaloBackupAgent
                                     device.PHash = node.InnerText.ToString();
                                     break;
                                 case "credentialmanager":
-                                    device.PHash = CredentialManager.GetCredentials(node.InnerText.ToString()).Password;
+                                    try
+                                    {
+                                        device.PHash = CredentialManager.GetCredentials(node.InnerText.ToString()).Password;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        File.AppendAllText(LogFile, $"Error with loading credentialmanager for {device.Address} \n {e.Message} \n");
+                                    }
                                     break;
                                 case "backupconfig":
                                     device.BackupConfig = bool.Parse(node.InnerText.ToString());
@@ -85,7 +91,7 @@ namespace PaloBackupAgent
             {
                 // Write the error to log
                 File.AppendAllText(LogFile, $"\n{DateTime.Now:dd-MM-yyyy HHmm}  -  Error encountered during backup:\n");
-                File.AppendAllText(LogFile, e.Message+"\n\n");
+                File.AppendAllText(LogFile, e.Message + "\n\n");
 
                 // Exit with a non-zero code
                 Environment.Exit(1);
@@ -130,7 +136,7 @@ namespace PaloBackupAgent
         private static void BackupPalo(PaloDevice device)
         {
             // Create the backup folder for this task
-            string BackupPath = BackupFolder + $@"\{device.Address}\{DateTime.Now:dd-MM-yyyy HHmm}" ;
+            string BackupPath = BackupFolder + $@"\{device.Address}\{DateTime.Now:dd-MM-yyyy HHmm}";
             Directory.CreateDirectory(BackupPath);
 
             // Set the required TLS version for this device
@@ -139,24 +145,24 @@ namespace PaloBackupAgent
             // Backup each of the areas that where specified
             if (device.BackupConfig)
             {
-                WriteResponce($"https://{device.Address}/api/?type=export&category=configuration&key={device.PHash}", BackupPath + @"\BackupConfig.xml");
+                WriteResponse($"https://{device.Address}/api/?type=export&category=configuration&key={device.PHash}", BackupPath + @"\BackupConfig.xml");
             }
             if (device.BackupState)
             {
-                WriteResponce($"https://{device.Address}/api/?type=export&category=device-state&key={device.PHash}", BackupPath + @"\DeviceState.tgz");
+                WriteResponse($"https://{device.Address}/api/?type=export&category=device-state&key={device.PHash}", BackupPath + @"\DeviceState.tgz");
             }
             if (device.BackupVersion)
             {
-                //WriteResponce($"https://{device.Address}/api/?type=version&key={device.PHash}", BackupPath + @"\VersionData.xml"); // basic info
-                WriteResponce($"https://{device.Address}/api/?type=op&cmd=<show><system><info></info></system></show>&key={device.PHash}", BackupPath + @"\VersionData.xml"); // full info
+                //WriteResponse($"https://{device.Address}/api/?type=version&key={device.PHash}", BackupPath + @"\VersionData.xml"); // basic info
+                WriteResponse($"https://{device.Address}/api/?type=op&cmd=<show><system><info></info></system></show>&key={device.PHash}", BackupPath + @"\VersionData.xml"); // full info
             }
 
         }
 
         /// <summary>
-        /// Writes the raw responce from a HttpWebRequest to file.
+        /// Writes the raw response from a HttpWebRequest to file.
         /// </summary>
-        public static void WriteResponce(string URL, string path)
+        public static void WriteResponse(string URL, string path)
         {
             HttpWebRequest request = WebRequest.Create(URL) as HttpWebRequest;
             var response = request.GetResponse();
@@ -176,8 +182,8 @@ namespace PaloBackupAgent
     /// </summary>
     public class PaloDevice
     {
-        public string Address { get; set; }
-        public string PHash { get; set; }
+        public string Address { get; set; } = "";
+        public string PHash { get; set; } = "";
         public bool BackupConfig { get; set; } = false;
         public bool BackupState { get; set; } = false;
         public bool BackupVersion { get; set; } = false;

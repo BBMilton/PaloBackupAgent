@@ -24,18 +24,18 @@ namespace PaloPHashGenerator
         {
             try
             {
-                ParseXML(GetResponce());
+                ParseXML(GetResponse());
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Error Parsing data");
+                MessageBox.Show(this, ex.Message, "Error Parsing Data");
             }
         }
 
         /// <summary>
-        /// returns the raw responce from a HttpWebRequest
+        /// returns the raw response from a HttpWebRequest
         /// </summary>
-        private string GetResponce()
+        private string GetResponse()
         {
             string URL = $"https://{AddressTextBox.Text}/api/?type=keygen&user={UsernameTextBox.Text}&password={PasswordTextBox.Password}";
 
@@ -68,7 +68,7 @@ namespace PaloPHashGenerator
                             {
                                 case "key":
                                     PHashTextBox.Text = node.InnerText.ToString();
-                                    break;
+                                    return;
                             }
                         }
 
@@ -77,7 +77,7 @@ namespace PaloPHashGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Error Parsing data");
+                MessageBox.Show(this, ex.Message, "Error Parsing Data");
             }
         }
 
@@ -104,7 +104,7 @@ namespace PaloPHashGenerator
                     }
                     else
                     {
-                        ParseXML(GetResponce());
+                        ParseXML(GetResponse());
                         SaveToCM();
                     }
                 }
@@ -139,7 +139,7 @@ namespace PaloPHashGenerator
                 //Otherwise are the other textboxes filled in?
                 else if (AddressTextBox.Text != null && AddressTextBox.Text.Length > 0 && UsernameTextBox.Text != null && UsernameTextBox.Text.Length > 0 && PasswordTextBox.Password != null && PasswordTextBox.Password.Length > 0)
                 {
-                    ParseXML(GetResponce());
+                    ParseXML(GetResponse());
                     SaveToCM();
                 }
                 else
@@ -147,7 +147,7 @@ namespace PaloPHashGenerator
                     MessageBox.Show(this, "You will need to generate a PHash First!", "No data available to copy");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Error copying");
             }
